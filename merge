@@ -12,10 +12,11 @@ git fetch
 git fetch fork
 git checkout $1
 git pull origin $1
-git checkout -b fork/$2 -t fork/$2
+git checkout -b fork_$2 -t fork/$2
 git rebase $1
 git checkout $1
-git merge fork/$2
+git merge fork_$2
+git branch -D fork_$2
 
 if [ "$3" != "" ]
 then
