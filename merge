@@ -36,6 +36,10 @@ echo $gitcmd
 eval $gitcmd
 
 git log -1
-git push fork :$2
-git push origin $1
-git push fork $1
+read -p "Would you like to push the above commit? " -n 1
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    git push fork :$2
+    git push origin $1
+    git push fork $1
+fi
+
