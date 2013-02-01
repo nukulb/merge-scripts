@@ -1,0 +1,41 @@
+#!/bin/bash
+#run script with next feature-branch reviewer tester framework
+usage(){
+    echo './merge next feature-branch "reviewer" "tester" project'
+    exit 1
+}
+
+[[ $# -eq 0 ]] && usage
+
+cd $5
+git fetch
+git fetch fork
+git checkout $1
+git pull origin $1
+git checkout -b fork/$2 -t fork/$2
+git rebase $1
+git checkout $1
+git merge fork/$2
+
+if [ "$3" != "" ]
+then
+    rev="\"Reviewed By: $3\""
+fi
+
+if [ "$4" != "" ]
+then
+    test="\"Tested By: $4\""
+fi
+
+cmd=" cat && echo && echo "$rev"  && echo "$test" "
+echo $cmd
+if [ -n "$3" ]; then
+    gitcmd="git filter-branch -f --msg-filter ' "$cmd" ' HEAD~1..HEAD"
+fi
+echo $gitcmd
+eval $gitcmd
+
+git log -1
+git push fork :$2
+git push origin $1
+git push fork $1
