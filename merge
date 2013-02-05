@@ -11,7 +11,7 @@ cd $5
 git fetch
 git fetch fork
 git checkout $1
-git pull origin $1
+git reset --hard origin/$1
 git checkout -b fork_$2 -t fork/$2
 git rebase $1
 git checkout $1
