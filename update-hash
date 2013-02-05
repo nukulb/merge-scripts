@@ -1,19 +1,25 @@
 #!/bin/bash
 #run script with next feature-branch reviewer tester framework
 usage(){
-    echo './update-hash packager-branch framework-branch'
+    echo './update-hash packager-branch framework-branch project'
     exit 1
 }
 
 [[ $# -eq 0 ]] && usage
 
-cd packager
-git fetch
+cd $3
+git fetch origin
+git fetch fork
 git checkout $1
+git reset --hard origin/$1
 cd Framework
 git pull origin $2
 cd ..
 git add Framework
 git commit -m "Updating the framework hash to the latest $2 branch."
-git push origin $1
-git push fork $1
+git log -1
+read -p "Would you like to push the above commit? " -n 1
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    git push origin $1
+    git push fork $1
+fi
